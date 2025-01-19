@@ -150,19 +150,63 @@ def categorize_paper(text, submission_type):
 
     text_lower = text.lower()
 
+     # Define keyword groups for categorization
     categories = {
-        "Lab Report": ["experiment", "results", "methodology", "scientific study"],
-        "Essay": ["thesis", "critical analysis", "persuasive", "compare and contrast"],
-        "Research Paper": ["data", "research", "statistical analysis", "field study"],
-        "Creative Writing": ["creative writing", "poem", "short story", "narrative"],
-        "Case Study": ["case study", "business case", "scenario analysis"],
-        "Presentation": ["presentation", "slides", "powerpoint", "visuals", "graphics"],
-        "Report": ["report", "summary", "overview", "findings"]
+        "Lab Report": [
+            "experiment", "results", "methodology", "materials and methods",
+            "observations", "scientific study", "data analysis", "hypothesis",
+            "laboratory", "practical work", "technical report", "variables"
+        ],
+        "Essay": [
+            "thesis", "argument", "critical analysis", "analysis of",
+            "persuasive", "compare and contrast", "expository", "point of view",
+            "rhetorical", "philosophical", "analytical essay", "interpretation"
+        ],
+        "Research Paper": [
+            "data", "research", "empirical study", "statistical analysis",
+            "field study", "hypothesis", "literature review", "citation",
+            "bibliography", "quantitative", "qualitative", "case study"
+        ],
+        "Creative Writing": [
+            "creative writing", "poem", "short story", "narrative", "fiction",
+            "prose", "imaginative", "memoir", "autobiographical", "artistic"
+        ],
+        "Case Study": [
+            "case study", "business case", "scenario analysis", "case analysis",
+            "problem solving", "diagnosis", "situational analysis", "solution"
+        ],
+        "Presentation": [
+            "presentation", "slides", "powerpoint", "visuals", "graphics",
+            "multimedia", "bullet points", "oral presentation", "poster"
+        ],
+        "Report": [
+            "report", "summary", "overview", "findings", "executive summary",
+            "progress report", "white paper", "informational document"
+        ]
     }
 
+    # Iterate through categories to find a match
     for category, keywords in categories.items():
         if any(keyword in text_lower for keyword in keywords):
             return category
+
+    # Fallback categorization based on the submission type
+    if "reflection" in text_lower or "self-assessment" in text_lower:
+        return "Reflection"
+    if "lab" in text_lower or "experiment" in text_lower:
+        return "Lab Report"
+    if "analysis" in text_lower or "essay" in text_lower:
+        return "Essay"
+    if "data" in text_lower or "research" in text_lower:
+        return "Research Paper"
+    if "creative" in text_lower or "story" in text_lower:
+        return "Creative Writing"
+    if "case" in text_lower or "study" in text_lower:
+        return "Case Study"
+    if "presentation" in text_lower or "slides" in text_lower:
+        return "Presentation"
+    if "report" in text_lower:
+        return "Report"
 
     return "Other"
 
