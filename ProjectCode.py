@@ -27,13 +27,14 @@ FOLDER_PATHS = [os.path.join(PARENT_DIR, folder) for folder in FOLDERS]
 data = []
 missing_files_data = []
 
-# Define the 2020-2021 academic quarter date ranges
+# Updated academic year quarter date ranges
 QUARTERS = {
-    "Fall": ("09-17", "12-11"),
-    "Winter": ("01-04", "03-19"),
-    "Spring": ("03-29", "06-11"),
-    "Summer": ("06-12", "09-16"),
+    "Fall": [("09-17", "12-11"), ("09-20", "12-10"), ("09-19", "12-09"), ("09-21", "12-13")],
+    "Winter": [("01-04", "03-19"), ("01-03", "03-18"), ("01-09", "03-24"), ("01-08", "03-22")],
+    "Spring": [("03-29", "06-11"), ("03-28", "06-10"), ("03-27", "06-09"), ("03-22", "06-19")],
+    "Summer": [("06-12", "09-16"), ("06-20", "09-02"), ("06-26", "09-07"), ("06-24", "09-06")],
 }
+VALID_YEARS = {2020, 2021,2022,2023,2024}
 
 # Initialize Hugging Face pipelines
 metacognition_analyzer = pipeline("text-classification", model="textattack/bert-base-uncased-yelp-polarity")
@@ -101,14 +102,16 @@ def assign_quarter(date):
     if date is None:
         return "Unknown"
     
-    year = date.year
-    if year not in {2020, 2021}:
-        year = None  # Ignore the year if it's outside the range
-
+    # Extract the month and day
     month_day = date.strftime("%m-%d")
-    for quarter, (start, end) in QUARTERS.items():
-        if start <= month_day <= end:
-            return f"{quarter} {year}" if year else quarter
+    year = date.year
+
+    for quarter, ranges in QUARTERS.items():
+        for start, end in ranges:
+            # Compare month and day for matching range
+            if start <= month_day <= end:
+                return f"{quarter} {year}" if year in VALID_YEARS else quarter
+
     return "Unknown"
 
 def process_submission_date_and_quarter(text):
